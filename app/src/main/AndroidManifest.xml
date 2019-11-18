@@ -16,6 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.DetalhesActivity"></activity>
+        <receiver android:name=".service.Alarm"></receiver>
         <service android:name=".service.CargaService"/>
     </application>
 

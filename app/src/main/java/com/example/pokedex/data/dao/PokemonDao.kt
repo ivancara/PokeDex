@@ -104,6 +104,39 @@ class PokemonDao(
         return auxList
     }
 
+    fun getPokemonById(id: Long): HmAux {
+        val sb = StringBuilder()
+        sb.append(
+            "SELECT ${com.example.pokedex.data.fields.Pokemon.ID}," +
+                    "${com.example.pokedex.data.fields.Pokemon.NAME}," +
+                    "${com.example.pokedex.data.fields.Pokemon.TIPO}," +
+                    "${com.example.pokedex.data.fields.Pokemon.IMAGEM}," +
+                    "${com.example.pokedex.data.fields.Pokemon.FAVORITO}," +
+                    "${com.example.pokedex.data.fields.Pokemon.PRIORITY}" +
+                    " FROM ${com.example.pokedex.data.fields.Pokemon.TABLE} "
+        )
+            sb.append("WHERE ${com.example.pokedex.data.fields.Pokemon.ID} = $id ")
+
+        super.OpenDb()
+
+        val cursor = super.db?.rawQuery(sb.toString(), null)
+        var aux: HmAux = HmAux()
+        while (cursor!!.moveToNext()) {
+            aux = HmAux()
+
+            aux[com.example.pokedex.data.fields.Pokemon.ID] = cursor.getString(0)
+            aux[com.example.pokedex.data.fields.Pokemon.NAME] = cursor.getString(1)
+            aux[com.example.pokedex.data.fields.Pokemon.TIPO] = cursor.getString(2)
+            aux[com.example.pokedex.data.fields.Pokemon.IMAGEM] = cursor.getString(3)
+            aux[com.example.pokedex.data.fields.Pokemon.PRIORITY] = cursor.getString(4)
+            aux[com.example.pokedex.data.fields.Pokemon.FAVORITO] = cursor.getString(5)
+        }
+        super.CloseDb()
+
+        return aux
+    }
+
+
     fun existById(id: Long): Boolean {
         super.OpenDb()
         val sb = StringBuilder()

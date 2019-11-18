@@ -1,15 +1,23 @@
 package com.example.pokedex.ui
 
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.NotificationCompat
 import android.text.Editable
 import android.text.TextWatcher
 import com.example.pokedex.ui.adapter.MainListAdapter
 import com.example.pokedex.R
 import com.example.pokedex.api.PokemonRepository
 import com.example.pokedex.data.dao.PokemonDao
+import com.example.pokedex.data.fields.Pokemon
+import com.example.pokedex.service.Alarm
 import com.example.pokedex.service.CargaService
 import kotlinx.android.synthetic.main.celula.*
 import kotlinx.android.synthetic.main.start.*
@@ -18,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var context: Context
     private lateinit var pokemonDao: PokemonDao
+    private lateinit var am: AlarmManager
+    private lateinit var nm: NotificationManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.start)
@@ -25,10 +35,21 @@ class MainActivity : AppCompatActivity() {
         initActions()
         startService()
     }
-
     private fun startService() {
-        val intent = Intent(context, CargaService::class.java)
-        startService(intent)
+        val mIntent = Intent(context, Alarm::class.java)
+
+        val pi = PendingIntent.getBroadcast(
+            context,
+            0,
+            mIntent,
+            0
+        )
+        am.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() * ((60 * 1000))*60,
+            ((60 * 1000))*60,
+            pi
+        )
     }
 
     private fun initVars() {
@@ -39,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             pokemonDao.getPokemon(""),
             R.layout.celula
         )
+        am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
     private fun initActions() {
@@ -60,7 +82,10 @@ class MainActivity : AppCompatActivity() {
         )
 
         lv_pokemon.setOnItemClickListener { adapterView, view, i, l ->
-           pokemonDao.darPrioridade(l)
+            pokemonDao.darPrioridade(l)
+            val intent = Intent(context, DetalhesActivity::class.java)
+            intent.putExtra(Pokemon.ID, l)
+            startActivity(intent)
         }
     }
 }
