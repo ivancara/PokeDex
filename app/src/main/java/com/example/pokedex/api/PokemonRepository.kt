@@ -42,7 +42,7 @@ class PokemonRepository {
     fun RunTask() {
         var api = CreateApi()
         var gson = Gson()
-        api.GetPokemon(0, 150).enqueue(object : Callback<ResponseBody> {
+        api.GetPokemon(0, 151).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
             }
@@ -80,7 +80,6 @@ class PokemonRepository {
                                         id = resultado.id,
                                         imagem = resultado.sprites?.frontDefault!!,
                                         evolveTo = ArrayList<Evolve_To>(),
-                                        descricao = "",
                                         favorito = false,
                                         priority = 0,
                                         tipo = type.removeSuffix("/")

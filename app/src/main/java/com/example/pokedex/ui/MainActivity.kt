@@ -11,6 +11,7 @@ import com.example.pokedex.R
 import com.example.pokedex.api.PokemonRepository
 import com.example.pokedex.data.dao.PokemonDao
 import com.example.pokedex.service.CargaService
+import kotlinx.android.synthetic.main.celula.*
 import kotlinx.android.synthetic.main.start.*
 
 class MainActivity : AppCompatActivity() {
@@ -22,9 +23,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.start)
         initVars()
         initActions()
-
-        val repo = PokemonRepository(context)
-        repo.RunTask()
+        //startService()
+        //val repo = PokemonRepository(context)
+        //repo.RunTask()
     }
 
     private fun startService() {
@@ -59,5 +60,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         )
+
+        lv_pokemon.setOnItemClickListener { adapterView, view, i, l ->
+           // tv_Fav.setBackgroundResource(R.drawable.ic_star_yellow_24dp)
+        }
     }
 }

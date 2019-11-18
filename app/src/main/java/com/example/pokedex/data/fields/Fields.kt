@@ -4,7 +4,7 @@ import android.os.Build
 
 object Infra{
     const val DB = "pokemon.db3"
-    const val VERSION = 2
+    const val VERSION = 3
 }
 
 object Pokemon {
@@ -12,7 +12,6 @@ object Pokemon {
     const val ID = "id"
     const val IMAGEM = "imagem"
     const val TIPO = "tipo"
-    const val DESCRICAO = "descricao"
     const val FAVORITO = "favorito"
     const val PRIORITY = "priority"
     const val TABLE = "pokemon"

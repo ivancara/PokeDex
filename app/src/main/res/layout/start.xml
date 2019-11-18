@@ -7,7 +7,7 @@
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:id="@+id/et_search"
-           android:hint=" Pesquise por Nome, Tipo, e Descrição"
+           android:hint=" Pesquise por Nome e Tipo"
            android:drawableLeft="@drawable/ic_search_black_24dp">
    </EditText>
    <ListView

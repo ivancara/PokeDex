@@ -21,7 +21,6 @@ class Database(
                         "    ID INT,\n" +
                         "    NAME VARCHAR,\n" +
                         "    TIPO VARCHAR,\n" +
-                        "    DESCRICAO VARCHAR,\n" +
                         "    IMAGEM VARCHAR,\n" +
                         "    FAVORITO BIT,\n" +
                         "    PRIORITY NUMBER\n" +

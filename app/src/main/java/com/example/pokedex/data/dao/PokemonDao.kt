@@ -17,7 +17,6 @@ class PokemonDao(
         cv.put(com.example.pokedex.data.fields.Pokemon.IMAGEM, pokemon.imagem)
         cv.put(com.example.pokedex.data.fields.Pokemon.TIPO, pokemon.tipo)
         cv.put(com.example.pokedex.data.fields.Pokemon.NAME, pokemon.name)
-        cv.put(com.example.pokedex.data.fields.Pokemon.DESCRICAO, pokemon.descricao)
         cv.put(com.example.pokedex.data.fields.Pokemon.FAVORITO, pokemon.favorito)
         cv.put(com.example.pokedex.data.fields.Pokemon.PRIORITY, pokemon.priority)
 
@@ -33,11 +32,32 @@ class PokemonDao(
         cv.put(com.example.pokedex.data.fields.Pokemon.IMAGEM, pokemon.imagem)
         cv.put(com.example.pokedex.data.fields.Pokemon.TIPO, pokemon.tipo)
         cv.put(com.example.pokedex.data.fields.Pokemon.NAME, pokemon.name)
-        cv.put(com.example.pokedex.data.fields.Pokemon.DESCRICAO, pokemon.descricao)
         cv.put(com.example.pokedex.data.fields.Pokemon.FAVORITO, pokemon.favorito)
         cv.put(com.example.pokedex.data.fields.Pokemon.PRIORITY, pokemon.priority)
         val conditional = "${com.example.pokedex.data.fields.Pokemon.ID} = ?"
         val args = arrayOf(pokemon.id.toString())
+        super.db?.update(com.example.pokedex.data.fields.Pokemon.TABLE, cv, conditional, args)
+
+        super.CloseDb()
+    }
+
+    fun favoritar(favorito: Boolean, id: Long) {
+        super.OpenDb()
+        val cv = ContentValues()
+        cv.put(com.example.pokedex.data.fields.Pokemon.FAVORITO, favorito)
+        val conditional = "${com.example.pokedex.data.fields.Pokemon.ID} = ?"
+        val args = arrayOf(id.toString())
+        super.db?.update(com.example.pokedex.data.fields.Pokemon.TABLE, cv, conditional, args)
+
+        super.CloseDb()
+    }
+
+    fun darPrioridade(prioridade: Int, id: Long) {
+        super.OpenDb()
+        val cv = ContentValues()
+        cv.put(com.example.pokedex.data.fields.Pokemon.PRIORITY, prioridade + 1)
+        val conditional = "${com.example.pokedex.data.fields.Pokemon.ID} = ?"
+        val args = arrayOf(id.toString())
         super.db?.update(com.example.pokedex.data.fields.Pokemon.TABLE, cv, conditional, args)
 
         super.CloseDb()
@@ -51,12 +71,13 @@ class PokemonDao(
             "SELECT ${com.example.pokedex.data.fields.Pokemon.ID}," +
                     "${com.example.pokedex.data.fields.Pokemon.NAME}," +
                     "${com.example.pokedex.data.fields.Pokemon.TIPO}," +
-                    "${com.example.pokedex.data.fields.Pokemon.IMAGEM}" +
+                    "${com.example.pokedex.data.fields.Pokemon.IMAGEM}," +
+                    "${com.example.pokedex.data.fields.Pokemon.FAVORITO}," +
+                    "${com.example.pokedex.data.fields.Pokemon.PRIORITY}" +
                     " FROM ${com.example.pokedex.data.fields.Pokemon.TABLE} "
         )
-        if (!search.isNullOrEmpty()) {
+        if (search.isNotEmpty()) {
             sb.append("WHERE ${com.example.pokedex.data.fields.Pokemon.NAME} LIKE '%$search%' ")
-            sb.append("OR ${com.example.pokedex.data.fields.Pokemon.DESCRICAO} LIKE '%$search%' ")
             sb.append("OR ${com.example.pokedex.data.fields.Pokemon.TIPO} LIKE '%$search%'")
         }
         sb.append("ORDER BY ${com.example.pokedex.data.fields.Pokemon.PRIORITY} DESC,")
