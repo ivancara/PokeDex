@@ -23,9 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.start)
         initVars()
         initActions()
-        //startService()
-        //val repo = PokemonRepository(context)
-        //repo.RunTask()
+        startService()
     }
 
     private fun startService() {
@@ -62,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         lv_pokemon.setOnItemClickListener { adapterView, view, i, l ->
-           // tv_Fav.setBackgroundResource(R.drawable.ic_star_yellow_24dp)
+           pokemonDao.darPrioridade(l)
         }
     }
 }

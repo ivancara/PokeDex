@@ -42,60 +42,69 @@ class PokemonRepository {
     fun RunTask() {
         var api = CreateApi()
         var gson = Gson()
-        api.GetPokemon(0, 151).enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+        var count = 1
+        do {
+            api.GetPokemon(0, count).enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-            }
+                }
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    var resposta = response.body()?.string()
-                    var pokemonOut = gson.fromJson(resposta, PokemonOut::class.java)
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        var resposta = response.body()?.string()
+                        var pokemonOut = gson.fromJson(resposta, PokemonOut::class.java)
+                        count += pokemonOut.count
+                        for (i in 0 until pokemonOut.results.size) {
+                            var pokemon = pokemonOut.results[i]
+                            api.GetPokemonByName(pokemon.name)
+                                .enqueue(object : Callback<ResponseBody> {
+                                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                    for (i in 0 until pokemonOut.results.size) {
-                        var pokemon = pokemonOut.results[i]
-                        api.GetPokemonByName(pokemon.name).enqueue(object : Callback<ResponseBody> {
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                if (response.isSuccessful) {
-                                    var resposta = response.body()?.string()
-
-                                    var resultado = gson.fromJson(resposta, Pokemon::class.java)
-
-                                    val dao = PokemonDao(context)
-                                    var type = ""
-
-                                    for (i in 0 until resultado.types.size){
-                                        type += " ${resultado.types[i].type.name.capitalize()} /"
                                     }
 
-                                    var pokemonData = com.example.pokedex.data.model.Pokemon(
-                                        name = resultado.name.capitalize(),
-                                        id = resultado.id,
-                                        imagem = resultado.sprites?.frontDefault!!,
-                                        evolveTo = ArrayList<Evolve_To>(),
-                                        favorito = false,
-                                        priority = 0,
-                                        tipo = type.removeSuffix("/")
-                                    )
+                                    override fun onResponse(
+                                        call: Call<ResponseBody>,
+                                        response: Response<ResponseBody>
+                                    ) {
+                                        if (response.isSuccessful) {
+                                            var resposta = response.body()?.string()
 
-                                    if (dao.existById(resultado.id)) {
-                                        dao.alterarPokemon(pokemonData)
-                                    } else {
-                                        dao.inserirPokemon(pokemonData)
+                                            var resultado =
+                                                gson.fromJson(resposta, Pokemon::class.java)
+
+                                            val dao = PokemonDao(context)
+                                            var type = ""
+
+                                            for (i in 0 until resultado.types.size) {
+                                                type += " ${resultado.types[i].type.name.capitalize()} /"
+                                            }
+
+                                            var pokemonData =
+                                                com.example.pokedex.data.model.Pokemon(
+                                                    name = resultado.name.capitalize(),
+                                                    id = resultado.id,
+                                                    imagem = resultado.sprites?.frontDefault!!,
+                                                    evolveTo = ArrayList<Evolve_To>(),
+                                                    favorito = false,
+                                                    priority = 0,
+                                                    tipo = type.removeSuffix("/")
+                                                )
+
+                                            if (dao.existById(resultado.id)) {
+                                                dao.alterarPokemon(pokemonData)
+                                            } else {
+                                                dao.inserirPokemon(pokemonData)
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        })
+                                })
+                        }
                     }
                 }
-            }
-        })
+            })
+        } while (count != 964)
     }
 }

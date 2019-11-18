@@ -52,17 +52,17 @@ class PokemonDao(
         super.CloseDb()
     }
 
-    fun darPrioridade(prioridade: Int, id: Long) {
+    fun darPrioridade(id: Long) {
         super.OpenDb()
-        val cv = ContentValues()
-        cv.put(com.example.pokedex.data.fields.Pokemon.PRIORITY, prioridade + 1)
-        val conditional = "${com.example.pokedex.data.fields.Pokemon.ID} = ?"
-        val args = arrayOf(id.toString())
-        super.db?.update(com.example.pokedex.data.fields.Pokemon.TABLE, cv, conditional, args)
+        val sb = StringBuilder()
+
+        sb.append("UPDATE ${com.example.pokedex.data.fields.Pokemon.TABLE} ")
+        sb.append("SET ${com.example.pokedex.data.fields.Pokemon.PRIORITY} = ${com.example.pokedex.data.fields.Pokemon.PRIORITY} + 1 ")
+        sb.append("WHERE ${com.example.pokedex.data.fields.Pokemon.ID} = $id")
+        super.db?.rawQuery(sb.toString(), null)
 
         super.CloseDb()
     }
-
 
     fun getPokemon(search: String): ArrayList<HmAux> {
         val sb = StringBuilder()
@@ -94,6 +94,8 @@ class PokemonDao(
             aux[com.example.pokedex.data.fields.Pokemon.NAME] = cursor.getString(1)
             aux[com.example.pokedex.data.fields.Pokemon.TIPO] = cursor.getString(2)
             aux[com.example.pokedex.data.fields.Pokemon.IMAGEM] = cursor.getString(3)
+            aux[com.example.pokedex.data.fields.Pokemon.PRIORITY] = cursor.getString(4)
+            aux[com.example.pokedex.data.fields.Pokemon.FAVORITO] = cursor.getString(5)
 
             auxList.add(aux)
         }
